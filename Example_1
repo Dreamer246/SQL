@@ -1,0 +1,26 @@
+
+WITH sales_table AS (
+  SELECT
+  order_id,
+  SUM(quantity*price) AS sales
+  FROM `prodcom.ecommerce.order_product` op
+  RIGHT JOIN `prodcom.ecommerce.product_table` pt ON op.product_id = pt.product_id
+  GROUP BY order_id
+)
+
+
+SELECT
+ot.order_id,
+ct.customer_id,
+order_date,
+status,
+delivery_included,
+sales,
+CONCAT(first_name, ' ', last_name) AS full_name,
+email,
+phone,
+region,
+subscription_to_newsletter
+FROM `prodcom.ecommerce.order_table` ot
+JOIN sales_table st ON ot.order_id = st.order_id
+JOIN `prodcom.ecommerce.customer_table` ct ON ot.customer_id = ct.customer_id
